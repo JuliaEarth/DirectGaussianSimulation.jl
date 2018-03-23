@@ -2,6 +2,16 @@
 
 [![][travis-img]][travis-url] [![][julia-pkg-img]][julia-pkg-url] [![][codecov-img]][codecov-url]
 
+This package provides an implementation of direct Gaussian simulation (a.k.a. LU simulation)
+as described in [Alabert 1987](https://link.springer.com/article/10.1007/BF00897191). In this
+method, the full covariance matrix is built to include all locations of the simulation domain,
+and samples from the multivariate Gaussian are drawn via LU factorization.
+
+The method, which is widely implemented in many packages for Gaussian processes, is appropriate
+for relatively small simulation domains (e.g. 100x100 grids, thousands of points) where it is
+feasible to factorize the full covariance. For larger domains (e.g. 3D grids), other methods
+are available such as sequential Gaussian simulation and FFT moving averages.
+
 ## Installation
 
 Get the latest stable release with Julia's package manager:
