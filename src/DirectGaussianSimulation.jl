@@ -34,7 +34,8 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
   # sanity checks
   @assert keys(solver.params) ⊆ keys(variables(problem)) "invalid variable names in solver parameters"
 
-  # retrieve problem domain
+  # retrieve problem info
+  pdata = data(problem)
   pdomain = domain(problem)
 
   realizations = []
@@ -52,22 +53,40 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
     # check stationarity
     @assert isstationary(γ) "variogram model must be stationary"
 
-    # build covariance matrix
-    C = γ.sill - pairwise(γ, pdomain, 1:npoints(pdomain))
+    # retrieve data locations in domain and data values
+    datalocs = Vector{Int}()
+    z₁ = Vector{V}()
+    for (loc, dataloc) in datamap(problem, var)
+      push!(datalocs, loc)
+      push!(z₁, value(pdata, dataloc, var))
+    end
+
+    # find simulation locations
+    simulated = falses(npoints(pdomain))
+    simulated[datalocs] = true
+    simlocs = find(.!simulated)
+
+    # build covariance matrices
+    C₁₁ = γ.sill - pairwise(γ, pdomain, datalocs)
+    C₂₂ = γ.sill - pairwise(γ, pdomain, simlocs)
+    C₁₂ = γ.sill - pairwise(γ, pdomain, datalocs, simlocs)
 
     # Cholesky factorization
-    L = chol(C)'
+    L₁₁ = chol(Symmetric(C₁₁))'
+    B₁₂ = L₁₁ \ C₁₂
+    A₂₁ = B₁₂'
+    L₂₂ = chol(Symmetric(C₂₂ - A₂₁*B₁₂))'
 
-    # retrieve data locations in domain
-    datalocs = [loc for (loc, dataloc) in datamap(problem, var)]
+    # conditioning term
+    d₂ = A₂₁*(L₁₁ \ z₁)
 
     if nworkers() > 1
       # generate realizations in parallel
-      λ = _ -> solve_single(problem, var, L)
+      λ = _ -> solve_single(problem, var, z₁, d₂, L₂₂, datalocs, simlocs)
       varreals = pmap(λ, 1:nreals(problem))
     else
       # fallback to serial execution
-      varreals = [solve_single(problem, var, L) for i=1:nreals(problem)]
+      varreals = [solve_single(problem, var, z₁, d₂, L₂₂, datalocs, simlocs) for i=1:nreals(problem)]
     end
 
     push!(realizations, var => varreals)
@@ -76,9 +95,25 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
   SimulationSolution(domain(problem), Dict(realizations))
 end
 
-function solve_single(problem::AbstractProblem, var::Symbol, L::LowerTriangular)
-  w = randn(size(L, 1))
-  L*w
+function solve_single(problem::AbstractProblem, var::Symbol,
+                      z₁::Vector, d₂::Vector, L₂₂::LowerTriangular,
+                      datalocs::Vector{Int}, simlocs::Vector{Int})
+  # retrieve problem info
+  pdomain = domain(problem)
+  V = variables(problem)[var]
+
+  # allocate memory for result
+  realization = Vector{V}(npoints(pdomain))
+
+  # set hard data
+  realization[datalocs] = z₁
+
+  # simulate the rest
+  w₂ = randn(size(L₂₂, 2))
+  y₂ = d₂ + L₂₂*w₂
+  realization[simlocs] = y₂
+
+  realization
 end
 
 export DirectGaussSim
