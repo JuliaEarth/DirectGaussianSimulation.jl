@@ -66,19 +66,24 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
     simulated[datalocs] = true
     simlocs = find(.!simulated)
 
-    # build covariance matrices
-    C₁₁ = γ.sill - pairwise(γ, pdomain, datalocs)
+    # covariance between simulation locations
     C₂₂ = γ.sill - pairwise(γ, pdomain, simlocs)
-    C₁₂ = γ.sill - pairwise(γ, pdomain, datalocs, simlocs)
 
-    # Cholesky factorization
-    L₁₁ = chol(Symmetric(C₁₁))'
-    B₁₂ = L₁₁ \ C₁₂
-    A₂₁ = B₁₂'
-    L₂₂ = chol(Symmetric(C₂₂ - A₂₁*B₁₂))'
+    if isempty(datalocs)
+      d₂  = zero(V)
+      L₂₂ = chol(Symmetric(C₂₂))'
+    else
+      # covariance beween data locations
+      C₁₁ = γ.sill - pairwise(γ, pdomain, datalocs)
+      C₁₂ = γ.sill - pairwise(γ, pdomain, datalocs, simlocs)
 
-    # conditioning term
-    d₂ = A₂₁*(L₁₁ \ z₁)
+      L₁₁ = chol(Symmetric(C₁₁))'
+      B₁₂ = L₁₁ \ C₁₂
+      A₂₁ = B₁₂'
+
+      d₂ = A₂₁*(L₁₁ \ z₁)
+      L₂₂ = chol(Symmetric(C₂₂ - A₂₁*B₁₂))'
+    end
 
     if nworkers() > 1
       # generate realizations in parallel
@@ -96,7 +101,7 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
 end
 
 function solve_single(problem::AbstractProblem, var::Symbol,
-                      z₁::Vector, d₂::Vector, L₂₂::LowerTriangular,
+                      z₁::Vector, d₂::Union{Real,Vector}, L₂₂::LowerTriangular,
                       datalocs::Vector{Int}, simlocs::Vector{Int})
   # retrieve problem info
   pdomain = domain(problem)
