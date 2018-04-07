@@ -1,7 +1,38 @@
+using GeoStats
 using DirectGaussianSimulation
+using Plots; gr()
 using Base.Test
+using VisualRegressionTests
 
-@testset "DirectGaussianSimulation.jl" begin
-    # Write your own tests here.
-    @test 1 == 2
+# setup GR backend for Travis CI
+ENV["GKSwstype"] = "100"
+ENV["PLOTS_TEST"] = "true"
+
+# list of maintainers
+maintainers = ["juliohm"]
+
+# environment settings
+ismaintainer = "USER" ∈ keys(ENV) && ENV["USER"] ∈ maintainers
+istravislinux = "TRAVIS" ∈ keys(ENV) && ENV["TRAVIS_OS_NAME"] == "linux"
+datadir = joinpath(@__DIR__,"data")
+
+@testset "Basic problem" begin
+  geodata = GeoDataFrame(DataFrames.DataFrame(x=[0.,25.,50.,75.,100.], variable=[0.,1.,0.,1.,0.]), [:x])
+  domain = RegularGrid{Float64}(100)
+  problem = SimulationProblem(geodata, domain, :variable, 3)
+
+  srand(2018)
+  solver = DirectGaussSim(:variable => @NT(variogram=SphericalVariogram(range=10.)))
+
+  solution = solve(problem, solver)
+
+  if ismaintainer || istravislinux
+    function plot_solution(fname)
+      plot(solution, size=(1000,400))
+      png(fname)
+    end
+    refimg = joinpath(datadir,"solution.png")
+
+    @test test_images(VisualTest(plot_solution, refimg), popup=!istravislinux) |> success
+  end
 end
