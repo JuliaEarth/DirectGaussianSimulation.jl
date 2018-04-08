@@ -61,7 +61,7 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
       push!(z₁, value(pdata, dataloc, var))
     end
 
-    # find simulation locations
+    # retrieve simulation locations
     simulated = falses(npoints(pdomain))
     simulated[datalocs] = true
     simlocs = find(.!simulated)
