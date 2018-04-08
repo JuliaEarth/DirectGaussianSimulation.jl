@@ -7,10 +7,12 @@ as described in [Alabert 1987](https://link.springer.com/article/10.1007/BF00897
 method, the full covariance matrix is built to include all locations of the simulation domain,
 and samples from the multivariate Gaussian are drawn via LU factorization.
 
-The method, which is widely implemented in many packages for Gaussian processes, is appropriate
-for relatively small simulation domains (e.g. 100x100 grids, thousands of points) where it is
-feasible to factorize the full covariance. For larger domains (e.g. 3D grids), other methods
-are available such as sequential Gaussian simulation and FFT moving averages.
+The method, which is widely implemented in many packages for Gaussian processes (e.g.
+[GaussianProcesses.jl](https://github.com/STOR-i/GaussianProcesses.jl),
+[GaussianRandomFields.jl](https://github.com/PieterjanRobbe/GaussianRandomFields.jl)),
+is appropriate for relatively small simulation domains (e.g. 100x100 grids, thousands of points)
+where it is feasible to factorize the full covariance. For larger domains (e.g. 3D grids), other
+methods are available such as sequential Gaussian simulation and FFT moving averages.
 
 ## Installation
 
