@@ -67,15 +67,15 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
     simlocs = find(.!simulated)
 
     # covariance between simulation locations
-    C₂₂ = γ.sill - pairwise(γ, pdomain, simlocs)
+    C₂₂ = sill(γ) - pairwise(γ, pdomain, simlocs)
 
     if isempty(datalocs)
       d₂  = zero(V)
       L₂₂ = chol(Symmetric(C₂₂))'
     else
       # covariance beween data locations
-      C₁₁ = γ.sill - pairwise(γ, pdomain, datalocs)
-      C₁₂ = γ.sill - pairwise(γ, pdomain, datalocs, simlocs)
+      C₁₁ = sill(γ) - pairwise(γ, pdomain, datalocs)
+      C₁₂ = sill(γ) - pairwise(γ, pdomain, datalocs, simlocs)
 
       L₁₁ = chol(Symmetric(C₁₁))'
       B₁₂ = L₁₁ \ C₁₂
