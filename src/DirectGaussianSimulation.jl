@@ -105,10 +105,9 @@ function solve_single(problem::AbstractProblem, var::Symbol,
                       datalocs::Vector{Int}, simlocs::Vector{Int})
   # retrieve problem info
   pdomain = domain(problem)
-  V = variables(problem)[var]
 
   # allocate memory for result
-  realization = Vector{V}(npoints(pdomain))
+  realization = Vector{eltype(z₁)}(npoints(pdomain))
 
   # set hard data
   realization[datalocs] = z₁
