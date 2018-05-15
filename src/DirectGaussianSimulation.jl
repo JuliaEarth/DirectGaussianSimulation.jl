@@ -12,6 +12,8 @@ using GeoStatsDevTools
 
 using Variography
 
+export DirectGaussSim
+
 """
     DirectGaussSim(var₁=>param₁, var₂=>param₂, ...)
 
@@ -30,16 +32,15 @@ LU decomposition of the covariance matrix.*
   @param variogram = GaussianVariogram()
 end
 
-function solve(problem::SimulationProblem, solver::DirectGaussSim)
-  # sanity checks
-  @assert keys(solver.params) ⊆ keys(variables(problem)) "invalid variable names in solver parameters"
-
+function preprocess(problem::SimulationProblem, solver::DirectGaussSim)
   # retrieve problem info
   pdata = data(problem)
   pdomain = domain(problem)
 
-  realizations = []
-  for (var,V) in variables(problem)
+  # result of preprocessing
+  preproc = Dict{Symbol,Tuple}()
+
+  for (var, V) in variables(problem)
     # get user parameters
     if var ∈ keys(solver.params)
       varparams = solver.params[var]
@@ -85,26 +86,19 @@ function solve(problem::SimulationProblem, solver::DirectGaussSim)
       L₂₂ = chol(Symmetric(C₂₂ - A₂₁*B₁₂))'
     end
 
-    if nworkers() > 1
-      # generate realizations in parallel
-      λ = _ -> solve_single(problem, var, z₁, d₂, L₂₂, datalocs, simlocs)
-      varreals = pmap(λ, 1:nreals(problem))
-    else
-      # fallback to serial execution
-      varreals = [solve_single(problem, var, z₁, d₂, L₂₂, datalocs, simlocs) for i=1:nreals(problem)]
-    end
-
-    push!(realizations, var => varreals)
+    preproc[var] = (z₁, d₂, L₂₂, datalocs, simlocs)
   end
 
-  SimulationSolution(domain(problem), Dict(realizations))
+  preproc
 end
 
-function solve_single(problem::AbstractProblem, var::Symbol,
-                      z₁::Vector, d₂::Union{Real,Vector}, L₂₂::LowerTriangular,
-                      datalocs::Vector{Int}, simlocs::Vector{Int})
+function solve_single(problem::SimulationProblem, var::Symbol,
+                      solver::DirectGaussSim, preproc)
   # retrieve problem info
   pdomain = domain(problem)
+
+  # unpack preprocessed parameters
+  z₁, d₂, L₂₂, datalocs, simlocs = preproc[var]
 
   # allocate memory for result
   realization = Vector{eltype(z₁)}(npoints(pdomain))
@@ -119,7 +113,5 @@ function solve_single(problem::AbstractProblem, var::Symbol,
 
   realization
 end
-
-export DirectGaussSim
 
 end
