@@ -3,14 +3,15 @@
 # Licensed under the ISC License. See LICENCE in the project root.
 # ------------------------------------------------------------------
 
-__precompile__()
-
 module DirectGaussianSimulation
 
-importall GeoStatsBase
+using GeoStatsBase
 using GeoStatsDevTools
 
 using Variography
+using LinearAlgebra
+
+import GeoStatsBase: preprocess, solve_single
 
 export DirectGaussSim
 
@@ -63,27 +64,25 @@ function preprocess(problem::SimulationProblem, solver::DirectGaussSim)
     end
 
     # retrieve simulation locations
-    simulated = falses(npoints(pdomain))
-    simulated[datalocs] = true
-    simlocs = find(.!simulated)
+    simlocs = [l for l in 1:npoints(pdomain) if l ∉ datalocs]
 
     # covariance between simulation locations
-    C₂₂ = sill(γ) - pairwise(γ, pdomain, simlocs)
+    C₂₂ = sill(γ) .- pairwise(γ, pdomain, simlocs)
 
     if isempty(datalocs)
       d₂  = zero(V)
-      L₂₂ = chol(Symmetric(C₂₂))'
+      L₂₂ = cholesky(Symmetric(C₂₂)).L
     else
       # covariance beween data locations
-      C₁₁ = sill(γ) - pairwise(γ, pdomain, datalocs)
-      C₁₂ = sill(γ) - pairwise(γ, pdomain, datalocs, simlocs)
+      C₁₁ = sill(γ) .- pairwise(γ, pdomain, datalocs)
+      C₁₂ = sill(γ) .- pairwise(γ, pdomain, datalocs, simlocs)
 
-      L₁₁ = chol(Symmetric(C₁₁))'
+      L₁₁ = cholesky(Symmetric(C₁₁)).L
       B₁₂ = L₁₁ \ C₁₂
       A₂₁ = B₁₂'
 
-      d₂ = A₂₁*(L₁₁ \ z₁)
-      L₂₂ = chol(Symmetric(C₂₂ - A₂₁*B₁₂))'
+      d₂ = A₂₁ * (L₁₁ \ z₁)
+      L₂₂ = cholesky(Symmetric(C₂₂ - A₂₁*B₁₂)).L
     end
 
     preproc[var] = (z₁, d₂, L₂₂, datalocs, simlocs)
@@ -101,14 +100,14 @@ function solve_single(problem::SimulationProblem, var::Symbol,
   z₁, d₂, L₂₂, datalocs, simlocs = preproc[var]
 
   # allocate memory for result
-  realization = Vector{eltype(z₁)}(npoints(pdomain))
+  realization = Vector{eltype(z₁)}(undef, npoints(pdomain))
 
   # set hard data
   realization[datalocs] = z₁
 
   # simulate the rest
   w₂ = randn(size(L₂₂, 2))
-  y₂ = d₂ + L₂₂*w₂
+  y₂ = d₂ .+ L₂₂*w₂
   realization[simlocs] = y₂
 
   realization

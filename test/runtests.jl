@@ -1,12 +1,8 @@
 using GeoStats
 using DirectGaussianSimulation
 using Plots; gr()
-using Base.Test
 using VisualRegressionTests
-
-# setup GR backend for Travis CI
-ENV["GKSwstype"] = "100"
-ENV["PLOTS_TEST"] = "true"
+using Test, Random
 
 # list of maintainers
 maintainers = ["juliohm"]
@@ -17,13 +13,14 @@ istravislinux = "TRAVIS" ∈ keys(ENV) && ENV["TRAVIS_OS_NAME"] == "linux"
 datadir = joinpath(@__DIR__,"data")
 
 @testset "DirectGaussianSimulation.jl" begin
-  geodata = GeoDataFrame(DataFrames.DataFrame(x=[0.,25.,50.,75.,100.], variable=[0.,1.,0.,1.,0.]), [:x])
+  geodata = PointSetData(Dict(:z => [0.,1.,0.,1.,0.]), [0. 25. 50. 75. 100.])
   domain = RegularGrid{Float64}(100)
-  @testset "Conditional simulation" begin
-    problem = SimulationProblem(geodata, domain, :variable, 3)
 
-    srand(2018)
-    solver = DirectGaussSim(:variable => @NT(variogram=SphericalVariogram(range=10.)))
+  @testset "Conditional simulation" begin
+    problem = SimulationProblem(geodata, domain, :z, 2)
+
+    Random.seed!(2018)
+    solver = DirectGaussSim(:z => (variogram=SphericalVariogram(range=10.),))
 
     solution = solve(problem, solver)
 
@@ -39,10 +36,10 @@ datadir = joinpath(@__DIR__,"data")
   end
 
   @testset "Unconditional simulation" begin
-    problem = SimulationProblem(domain, :variable => Float64, 3)
+    problem = SimulationProblem(domain, :z => Float64, 2)
 
-    srand(2018)
-    solver = DirectGaussSim(:variable => @NT(variogram=SphericalVariogram(range=10.)))
+    Random.seed!(2018)
+    solver = DirectGaussSim(:z => (variogram=SphericalVariogram(range=10.),))
 
     solution = solve(problem, solver)
 
