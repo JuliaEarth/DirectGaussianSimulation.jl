@@ -2,7 +2,7 @@ using GeoStats
 using DirectGaussianSimulation
 using Plots; gr()
 using VisualRegressionTests
-using Test, Random
+using Test, Pkg, Random
 
 # list of maintainers
 maintainers = ["juliohm"]
@@ -11,6 +11,11 @@ maintainers = ["juliohm"]
 ismaintainer = "USER" ∈ keys(ENV) && ENV["USER"] ∈ maintainers
 istravislinux = "TRAVIS" ∈ keys(ENV) && ENV["TRAVIS_OS_NAME"] == "linux"
 datadir = joinpath(@__DIR__,"data")
+
+if ismaintainer
+  Pkg.add("Gtk")
+  using Gtk
+end
 
 @testset "DirectGaussianSimulation.jl" begin
   geodata = PointSetData(Dict(:z => [0.,1.,0.,1.,0.]), [0. 25. 50. 75. 100.])
