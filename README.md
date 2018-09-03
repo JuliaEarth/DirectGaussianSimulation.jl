@@ -19,7 +19,7 @@ such as sequential Gaussian simulation and FFT moving averages.
 Get the latest stable release with Julia's package manager:
 
 ```julia
-Pkg.add("DirectGaussianSimulation")
+] add DirectGaussianSimulation
 ```
 
 ## Usage
