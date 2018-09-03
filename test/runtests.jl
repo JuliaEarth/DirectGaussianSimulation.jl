@@ -8,8 +8,8 @@ using Test, Pkg, Random
 maintainers = ["juliohm"]
 
 # environment settings
+istravis = "TRAVIS" ∈ keys(ENV)
 ismaintainer = "USER" ∈ keys(ENV) && ENV["USER"] ∈ maintainers
-istravislinux = "TRAVIS" ∈ keys(ENV) && ENV["TRAVIS_OS_NAME"] == "linux"
 datadir = joinpath(@__DIR__,"data")
 
 if ismaintainer
@@ -29,14 +29,14 @@ end
 
     solution = solve(problem, solver)
 
-    if ismaintainer || istravislinux
+    if ismaintainer || istravis
       function plot_cond_solution(fname)
         plot(solution, size=(1000,400))
         png(fname)
       end
       refimg = joinpath(datadir,"CondSimSol.png")
 
-      @test test_images(VisualTest(plot_cond_solution, refimg), popup=!istravislinux) |> success
+      @test test_images(VisualTest(plot_cond_solution, refimg), popup=!istravis, tol=0.1) |> success
     end
   end
 
@@ -48,14 +48,14 @@ end
 
     solution = solve(problem, solver)
 
-    if ismaintainer || istravislinux
+    if ismaintainer || istravis
       function plot_uncond_solution(fname)
         plot(solution, size=(1000,400))
         png(fname)
       end
       refimg = joinpath(datadir,"UncondSimSol.png")
 
-      @test test_images(VisualTest(plot_uncond_solution, refimg), popup=!istravislinux) |> success
+      @test test_images(VisualTest(plot_uncond_solution, refimg), popup=!istravis, tol=0.1) |> success
     end
   end
 end
