@@ -1,4 +1,5 @@
-using GeoStats
+using GeoStatsBase
+using GeoStatsDevTools
 using DirectGaussianSimulation
 using Plots; gr()
 using VisualRegressionTests
