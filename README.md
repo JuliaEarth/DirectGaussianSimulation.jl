@@ -1,6 +1,6 @@
 # DirectGaussianSimulation.jl
 
-[![][travis-img]][travis-url] [![][julia-pkg-img]][julia-pkg-url] [![][codecov-img]][codecov-url]
+[![][travis-img]][travis-url] [![][codecov-img]][codecov-url]
 
 This package provides an implementation of direct Gaussian simulation (a.k.a. LU simulation)
 as described in [Alabert 1987](https://link.springer.com/article/10.1007/BF00897191). In this
@@ -34,9 +34,6 @@ If you have any questions, please [open an issue](https://github.com/juliohm/Dir
 
 [travis-img]: https://travis-ci.org/juliohm/DirectGaussianSimulation.jl.svg?branch=master
 [travis-url]: https://travis-ci.org/juliohm/DirectGaussianSimulation.jl
-
-[julia-pkg-img]: http://pkg.julialang.org/badges/DirectGaussianSimulation_0.7.svg
-[julia-pkg-url]: http://pkg.julialang.org/?pkg=DirectGaussianSimulation
 
 [codecov-img]: https://codecov.io/gh/juliohm/DirectGaussianSimulation.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/juliohm/DirectGaussianSimulation.jl
