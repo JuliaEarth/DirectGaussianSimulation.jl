@@ -12,7 +12,7 @@ The method, which is widely implemented in many packages for Gaussian processes 
 [GaussianRandomFields.jl](https://github.com/PieterjanRobbe/GaussianRandomFields.jl)),
 is appropriate for relatively small simulation domains (e.g. 100x100 grids) where it is feasible
 to factorize the full covariance. For larger domains (e.g. 3D grids), other methods are available
-such as sequential Gaussian simulation and FFT moving averages.
+such as sequential Gaussian simulation, spectral methods, and FFT moving averages.
 
 ## Installation
 
@@ -26,7 +26,7 @@ Get the latest stable release with Julia's package manager:
 
 This package is part of the [GeoStats.jl](https://github.com/juliohm/GeoStats.jl) framework.
 
-For a simple example of usage, please check [this notebook](docs/Usage.ipynb).
+For a simple example of usage, please check [this notebook](https://nbviewer.jupyter.org/github/juliohm/DirectGaussianSimulation.jl/blob/master/docs/Usage.ipynb).
 
 ## Asking for help
 
