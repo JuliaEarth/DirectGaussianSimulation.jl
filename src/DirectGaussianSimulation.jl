@@ -28,6 +28,7 @@ LU decomposition of the covariance matrix.*
 """
 @simsolver DirectGaussSim begin
   @param variogram = GaussianVariogram()
+  @param mean = nothing
 end
 
 function preprocess(problem::SimulationProblem, solver::DirectGaussSim)
@@ -82,7 +83,14 @@ function preprocess(problem::SimulationProblem, solver::DirectGaussSim)
       L₂₂ = cholesky(Symmetric(C₂₂ - A₂₁*B₁₂)).L
     end
 
-    preproc[var] = (z₁, d₂, L₂₂, datalocs, simlocs)
+    if !isnothing(varparams.mean) && !isempty(datalocs)
+      @warn "mean can only be specified in unconditional simulation"
+    end
+
+    # mean for unconditional simulation
+    μ = isnothing(varparams.mean) ? zero(V) : varparams.mean
+
+    preproc[var] = (z₁, d₂, L₂₂, μ, datalocs, simlocs)
   end
 
   preproc
@@ -94,7 +102,7 @@ function solve_single(problem::SimulationProblem, var::Symbol,
   pdomain = domain(problem)
 
   # unpack preprocessed parameters
-  z₁, d₂, L₂₂, datalocs, simlocs = preproc[var]
+  z₁, d₂, L₂₂, μ, datalocs, simlocs = preproc[var]
 
   # allocate memory for result
   realization = Vector{eltype(z₁)}(undef, npoints(pdomain))
@@ -106,6 +114,9 @@ function solve_single(problem::SimulationProblem, var::Symbol,
   w₂ = randn(size(L₂₂, 2))
   y₂ = d₂ .+ L₂₂*w₂
   realization[simlocs] = y₂
+
+  # adjust mean in case of unconditional simulation
+  isempty(datalocs) && (realization .+= μ)
 
   realization
 end
