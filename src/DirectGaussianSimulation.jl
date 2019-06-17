@@ -5,10 +5,11 @@
 module DirectGaussianSimulation
 
 using GeoStatsBase
-import GeoStatsBase: preprocess, solve_single
 
 using Variography
 using LinearAlgebra
+
+import GeoStatsBase: preprocess, solve_single
 
 export DirectGaussSim
 

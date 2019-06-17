@@ -1,7 +1,7 @@
 name = "DirectGaussianSimulation"
 uuid = "b9828eed-09bc-50cb-b95c-f80757bd8d62"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 GeoStatsBase = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
@@ -11,7 +11,6 @@ Variography = "04a0146e-e6df-5636-8d7f-62fa9eb0b20c"
 
 [extras]
 GeoStatsBase = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
-GeoStatsDevTools = "19e549d1-356f-5655-9f3d-c1d6136da705"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
@@ -22,9 +21,9 @@ Variography = "04a0146e-e6df-5636-8d7f-62fa9eb0b20c"
 VisualRegressionTests = "34922c18-7c2a-561c-bac1-01e79b2c4c92"
 
 [targets]
-test = ["GeoStatsBase", "Pkg", "GeoStatsDevTools", "VisualRegressionTests", "Plots", "ImageMagick", "QuartzImageIO", "Random", "Variography", "Test"]
+test = ["GeoStatsBase", "Pkg", "VisualRegressionTests", "Plots", "ImageMagick", "QuartzImageIO", "Random", "Variography", "Test"]
 
 [compat]
-GeoStatsBase = "≥ 0.4.2"
-Variography = "≥ 0.3.6"
+GeoStatsBase = "≥ 0.5.0"
+Variography = "≥ 0.3.7"
 julia = "1"
