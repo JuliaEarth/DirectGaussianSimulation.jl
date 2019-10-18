@@ -59,7 +59,7 @@ function preprocess(problem::SimulationProblem, solver::DirectGaussSim)
     z₁ = Vector{V}()
     for (loc, dataloc) in datamap(problem, var)
       push!(datalocs, loc)
-      push!(z₁, value(pdata, dataloc, var))
+      push!(z₁, pdata[dataloc,var])
     end
 
     # retrieve simulation locations
