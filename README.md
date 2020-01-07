@@ -24,16 +24,16 @@ Get the latest stable release with Julia's package manager:
 
 ## Usage
 
-This package is part of the [GeoStats.jl](https://github.com/juliohm/GeoStats.jl) framework.
+This package is part of the [GeoStats.jl](https://github.com/JuliaEarth/GeoStats.jl) framework.
 
-For a simple example of usage, please check [this notebook](https://nbviewer.jupyter.org/github/juliohm/DirectGaussianSimulation.jl/blob/master/docs/Usage.ipynb).
+For a simple example of usage, please check [this notebook](https://nbviewer.jupyter.org/github/JuliaEarth/DirectGaussianSimulation.jl/blob/master/docs/Usage.ipynb).
 
 ## Asking for help
 
-If you have any questions, please [open an issue](https://github.com/juliohm/DirectGaussianSimulation.jl/issues).
+If you have any questions, please [open an issue](https://github.com/JuliaEarth/DirectGaussianSimulation.jl/issues).
 
-[travis-img]: https://travis-ci.org/juliohm/DirectGaussianSimulation.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/juliohm/DirectGaussianSimulation.jl
+[travis-img]: https://travis-ci.org/JuliaEarth/DirectGaussianSimulation.jl.svg?branch=master
+[travis-url]: https://travis-ci.org/JuliaEarth/DirectGaussianSimulation.jl
 
-[codecov-img]: https://codecov.io/gh/juliohm/DirectGaussianSimulation.jl/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/juliohm/DirectGaussianSimulation.jl
+[codecov-img]: https://codecov.io/gh/JuliaEarth/DirectGaussianSimulation.jl/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/JuliaEarth/DirectGaussianSimulation.jl
