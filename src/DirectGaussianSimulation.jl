@@ -68,6 +68,10 @@ function preprocess(problem::SimulationProblem, solver::DirectGaussSim)
   for covars in covariables(problem, solver)
     conames  = covars.names
     coparams = []
+
+    # 1 or 2 variables can be simulated simultaneously
+    @assert length(conames) ∈ (1, 2) "invalid number of covariables"
+
     # preprocess parameters for individual variables
     for var in conames
       # get parameters for variable
@@ -153,7 +157,7 @@ function solvesingle(problem::SimulationProblem, covars::NamedTuple,
   result = Dict(conames[1] => Y₁)
 
   # simulate second variable
-  if length(conames) > 1
+  if length(conames) == 2
     ρ = params[3][1]
     Y₂, w₂ = lusim(params[2], ρ, w₁)
     push!(result, conames[2] => Y₂)
@@ -174,10 +178,10 @@ function lusim(params, ρ=nothing, w₁=nothing)
 
   # conditional simulation
   w₂ = randn(size(L₂₂, 2))
-  if ρ ≠ nothing
-    y₂ = d₂ .+ L₂₂*(ρ*w₁ + √(1-ρ^2)*w₂)
-  else
+  if isnothing(ρ)
     y₂ = d₂ .+ L₂₂*w₂
+  else
+    y₂ = d₂ .+ L₂₂*(ρ*w₁ + √(1-ρ^2)*w₂)
   end
 
   # hard data and simulated values
