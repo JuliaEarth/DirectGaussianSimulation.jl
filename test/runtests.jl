@@ -19,7 +19,7 @@ if !istravis
 end
 
 @testset "DirectGaussianSimulation.jl" begin
-  geodata = PointSetData(Dict(:z => [0.,1.,0.,1.,0.]), [0. 25. 50. 75. 100.])
+  geodata = PointSetData(OrderedDict(:z => [0.,1.,0.,1.,0.]), [0. 25. 50. 75. 100.])
   domain = RegularGrid{Float64}(100)
 
   @testset "Conditional simulation" begin
