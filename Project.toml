@@ -9,6 +9,11 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Variography = "04a0146e-e6df-5636-8d7f-62fa9eb0b20c"
 
+[compat]
+GeoStatsBase = "0.7, 0.8"
+Variography = "0.5"
+julia = "1"
+
 [extras]
 GeoStatsBase = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
@@ -22,8 +27,3 @@ VisualRegressionTests = "34922c18-7c2a-561c-bac1-01e79b2c4c92"
 
 [targets]
 test = ["GeoStatsBase", "Pkg", "VisualRegressionTests", "Plots", "ImageMagick", "QuartzImageIO", "Random", "Variography", "Test"]
-
-[compat]
-GeoStatsBase = "0.7"
-Variography = "0.5"
-julia = "1"
