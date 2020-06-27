@@ -1,7 +1,7 @@
 name = "DirectGaussianSimulation"
 uuid = "b9828eed-09bc-50cb-b95c-f80757bd8d62"
 author = "Júlio Hoffimann <julio.hoffimann@gmail.com>"
-version = "0.3.5"
+version = "0.3.6"
 
 [deps]
 GeoStatsBase = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
