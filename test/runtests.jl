@@ -1,8 +1,7 @@
 using DirectGaussianSimulation
 using GeoStatsBase
 using Variography
-using Plots; gr(size=(1000,400))
-using VisualRegressionTests
+using Plots, VisualRegressionTests
 using Test, Pkg, Random
 
 # workaround GR warnings
@@ -20,8 +19,8 @@ end
 
 @testset "DirectGaussianSimulation.jl" begin
   @testset "Conditional simulation" begin
-    sdata = PointSetData(OrderedDict(:z => [0.,1.,0.,1.,0.]), [0. 25. 50. 75. 100.])
-    sdomain = RegularGrid{Float64}(100)
+    sdata = georef((z=[0.,1.,0.,1.,0.],), [0. 25. 50. 75. 100.])
+    sdomain = RegularGrid(100)
 
     problem = SimulationProblem(sdata, sdomain, :z, 2)
     solver = DirectGaussSim(:z => (variogram=SphericalVariogram(range=10.),))
@@ -35,7 +34,7 @@ end
   end
 
   @testset "Unconditional simulation" begin
-    sdomain = RegularGrid{Float64}(100)
+    sdomain = RegularGrid(100)
 
     problem = SimulationProblem(sdomain, :z => Float64, 2)
     solver = DirectGaussSim(:z => (variogram=SphericalVariogram(range=10.),))
@@ -49,8 +48,8 @@ end
   end
 
   @testset "Cosimulation" begin
-    sdata = PointSetData(OrderedDict(:z=>[0.,1.,0.,1.,0.], :y=>[0.,1.,0.,1.,0.]), [0. 25. 50. 75. 100.])
-    sdomain = RegularGrid{Float64}(500)
+    sdata = georef((z=[0.,1.,0.,1.,0.], y=[0.,1.,0.,1.,0.]), [0. 25. 50. 75. 100.])
+    sdomain = RegularGrid(500)
 
     problem = SimulationProblem(sdomain, (:z=>Float64,:y=>Float64), 1)
     solver = DirectGaussSim(:z => (variogram=SphericalVariogram(range=10.),),
