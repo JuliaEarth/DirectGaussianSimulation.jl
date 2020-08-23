@@ -93,7 +93,7 @@ function preprocess(problem::SimulationProblem, solver::DirectGaussSim)
       end
 
       # retrieve simulation locations
-      slocs = [l for l in 1:npoints(pdomain) if l ∉ dlocs]
+      slocs = [l for l in 1:nelms(pdomain) if l ∉ dlocs]
 
       # covariance between simulation locations
       C₂₂ = sill(γ) .- pairwise(γ, pdomain, slocs)
