@@ -10,7 +10,7 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Variography = "04a0146e-e6df-5636-8d7f-62fa9eb0b20c"
 
 [compat]
-GeoStatsBase = "0.12"
+GeoStatsBase = "0.12, 0.13"
 Variography = "0.8"
 julia = "1.4"
 
